@@ -30,9 +30,10 @@ const eventSchema = new mongoose.Schema({
   comments: [commentSchema],
   activities: [activitySchema],
   items: [itemSchema],
-  eventName: String, 
-  eventDate: {type: Date},
+  eventName: {type: String, required: true}, 
+  eventDate: {type: Date, required: true},
   eventDetails: String,
+  photo: String,
 },{
   timestamps: true,
 })
