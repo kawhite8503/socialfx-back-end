@@ -13,4 +13,6 @@ router.post('/', checkAuth, eventsCtrl.create)
 router.get('/', checkAuth, eventsCtrl.index)
 //router.post('/:id/details',checkAuth, eventsCtrl.createDetails)
 router.get('/:id',eventsCtrl.show)
+router.post('/:id/comments', checkAuth, eventsCtrl.createComment)
+
 export { router }
