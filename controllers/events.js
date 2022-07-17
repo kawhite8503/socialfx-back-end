@@ -60,8 +60,25 @@ function index(req,res){
   })
 }
 
+function createComment(req, res) {
+  req.body.owner = req.user.profile._id
+  Event.findById(req.params.id)
+  .then(event => {
+    event.comments.push(req.body)
+    event.save()
+    .then(comment => {
+      res.json(comment)
+    })
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
 export {
   create,
   show,
-  index
+  index,
+  createComment
 }
