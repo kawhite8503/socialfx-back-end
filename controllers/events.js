@@ -54,7 +54,7 @@ function addPhoto(req,res) {
   const imageFile = req.files.photo.path
   Event.findById(req.params.id)
     .then(event => {
-      cloudinary.uploader.upload(imageFile, {tags: `${event.name}`})
+      cloudinary.uploader.upload(imageFile, {tags: `${event.eventName}`})
       .then(image => {
         console.log(image)
         event.photo = image.url
