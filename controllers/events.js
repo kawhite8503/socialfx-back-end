@@ -1,5 +1,7 @@
 import { Event } from '../models/event.js'
 
+
+
 function create(req, res) {
   req.body.owner = req.user.profile
   Event.create(req.body)
@@ -45,7 +47,21 @@ function show(req, res){
     res.status(500).json({err: err.errmsg})
   })
 }
+
+function index(req,res){
+  Event.find({})
+  .populate('owner')
+  .then(events => {
+    res.json(events)
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
 export {
   create,
   show,
+  index
 }
