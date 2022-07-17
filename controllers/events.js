@@ -17,6 +17,7 @@ function create(req, res) {
   })
   console.log(req.body)
 }
+
 // function createDetails(req, res) {
 //   Event.findById(req.params.id)
 //     .then(event =>{
@@ -35,6 +36,7 @@ function create(req, res) {
 //     })
 //   })
 // }
+
 function show(req, res){
   Event.findById(req.params.id)
   .populate('owner')
