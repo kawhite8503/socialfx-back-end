@@ -1,6 +1,8 @@
 import { Event } from '../models/event.js'
 import { v2 as cloudinary } from 'cloudinary'
 
+
+
 function create(req, res) {
   req.body.owner = req.user.profile
   Event.create(req.body)
@@ -68,10 +70,22 @@ function addPhoto(req,res) {
     })
 }
 
+function index(req,res){
+  Event.find({})
+  .populate('owner')
+  .then(events => {
+    res.json(events)
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
 
 
 export {
   create,
   show,
+  index,
   addPhoto,
 }
