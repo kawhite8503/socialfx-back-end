@@ -9,7 +9,6 @@ const commentSchema = new mongoose.Schema({
 
 const activitySchema = new mongoose.Schema({
   actName: String,
-  comments: [commentSchema],
   supplier: {type: mongoose.Schema.Types.ObjectId, ref: 'Profile' }
 }, {
   timestamps: true
@@ -18,7 +17,6 @@ const activitySchema = new mongoose.Schema({
 const itemSchema = new mongoose.Schema({
   itemName: String,
   itemType:  String,
-  comments: [commentSchema],
   supplier: {type: mongoose.Schema.Types.ObjectId, ref: 'Profile' }
 }, {
   timestamps: true
