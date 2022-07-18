@@ -17,4 +17,8 @@ router.get('/:id',eventsCtrl.show)
 router.put('/:id/add-photo', checkAuth, eventsCtrl.addPhoto)
 router.post('/:id/comments', checkAuth, eventsCtrl.createComment)
 router.put('/:id', checkAuth,eventsCtrl.update)
+router.post('/:id/add-item', checkAuth, eventsCtrl.createItem)
+
+router.delete('/:id/deleteItem', checkAuth, eventsCtrl.deleteItem)
+
 export { router }
