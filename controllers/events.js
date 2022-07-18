@@ -1,4 +1,5 @@
 import { Event } from '../models/event.js'
+import { v2 as cloudinary } from 'cloudinary'
 
 
 
@@ -48,6 +49,27 @@ function show(req, res){
   })
 }
 
+function addPhoto(req,res) {
+  console.log(req.files)
+  const imageFile = req.files.photo.path
+  Event.findById(req.params.id)
+    .then(event => {
+      cloudinary.uploader.upload(imageFile, {tags: `${event.eventName}`})
+      .then(image => {
+        console.log(image)
+        event.photo = image.url
+        event.save()
+        .then(event => {
+          res.status(201).json(event.photo)
+        })
+      })
+      .catch(err => {
+        console.log(err)
+        res.status(500).json(err)
+      })
+    })
+}
+
 function index(req,res){
   Event.find({})
   .populate('owner')
@@ -59,6 +81,7 @@ function index(req,res){
     res.status(500).json({err: err.errmsg})
   })
 }
+
 
 function createComment(req, res) {
   req.body.owner = req.user.profile._id
@@ -76,9 +99,12 @@ function createComment(req, res) {
   })
 }
 
+
 export {
   create,
   show,
   index,
-  createComment
+  addPhoto,
+  createComment,
+
 }
