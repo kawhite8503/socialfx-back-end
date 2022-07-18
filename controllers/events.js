@@ -19,6 +19,25 @@ function create(req, res) {
   })
   console.log(req.body)
 }
+function update(req, res) {
+  Event.findById(req.params.id)
+  .then(event => {
+    if (event.owner._id.equals(req.user.profile)){
+      Event.findByIdAndUpdate(req.params.id, req.body, {new: true})
+      .populate('owner')
+      .then(updatedEvent => {
+        res.json(updatedEvent)
+      })
+    } else {
+      res.status(401).json({err: "Not authorized"})
+    }
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
 // function createDetails(req, res) {
 //   Event.findById(req.params.id)
 //     .then(event =>{
@@ -106,5 +125,5 @@ export {
   index,
   addPhoto,
   createComment,
-
+  update,
 }
