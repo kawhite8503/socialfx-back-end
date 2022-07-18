@@ -154,6 +154,17 @@ function deleteItem(req, res) {
   })
 }
 
+function deleteEvent(req,res) {
+  Event.findByIdAndDelete(req.params.id)
+  .then(deletedEvent => {
+    res.json(deletedEvent)
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
 export {
   create,
   show,
@@ -163,5 +174,5 @@ export {
   update,
   createItem,
   deleteItem,
-  
+  deleteEvent as delete
 }
