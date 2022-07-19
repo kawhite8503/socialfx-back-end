@@ -12,15 +12,16 @@ router.use(decodeUserFromToken)
 
 router.post('/', checkAuth, eventsCtrl.create)
 router.get('/', checkAuth, eventsCtrl.index)
-// router.post('/:id/details',checkAuth, eventsCtrl.createDetails)
+router.post('/:id/details',checkAuth, eventsCtrl.createAddAct)
+router.post('/:id/details',checkAuth, eventsCtrl.createAddItem)
 router.get('/:id',eventsCtrl.show)
 router.put('/:id/add-photo', checkAuth, eventsCtrl.addPhoto)
 router.post('/:id/comments', checkAuth, eventsCtrl.createComment)
-router.patch('/:id/details', checkAuth, eventsCtrl.update)
 router.put('/:id', checkAuth, eventsCtrl.update)
 router.post('/:id/add-item', checkAuth, eventsCtrl.createItem)
 router.delete('/:id/deleteItem', checkAuth, eventsCtrl.deleteItem)
 router.delete('/:id', checkAuth, eventsCtrl.delete)
 router.get('/:id/comments', checkAuth, eventsCtrl.getAllComments)
+
 
 export { router }
