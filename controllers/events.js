@@ -105,12 +105,12 @@ function index(req,res){
 
 function createComment(req, res) {
   req.body.owner = req.user.profile._id
-  Event.findById(req.params.id)
-  .then(event => {
+  Event.findByIdAndUpdate(req.params.id, req.body.comments, {new: true})
+  .then(event=> {
     event.comments.push(req.body)
     event.save()
-    .then(comment => {
-      res.json(comment)
+    .then(eventComment => {
+      res.json(eventComment)
     })
   })
   .catch(err => {
