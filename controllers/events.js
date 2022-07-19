@@ -197,6 +197,33 @@ function deleteEvent(req,res) {
   })
 }
 
+function getAllComments(req, res) {
+  Event.findById(red.params.id)
+  .populate('owner')
+  .then(event => {
+    Comment.findById(req.params.commentId)
+    .then(comment => {
+      res.json(eventComment)
+    })
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
+function edit(req,res){
+  Event.findByIdAndUpdate(req.params.id, req.body, {new: true})
+  .populate('owner')
+  .then(editedEvent => {
+    res.json(editedEvent)
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
 export {
   create,
   show,
@@ -208,5 +235,7 @@ export {
   createAddAct,
   createItem,
   deleteItem,
-  deleteEvent as delete
+  deleteEvent as delete,
+  getAllComments,
+  edit,
 }
