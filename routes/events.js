@@ -12,6 +12,7 @@ router.use(decodeUserFromToken)
 
 router.post('/', checkAuth, eventsCtrl.create)
 router.get('/', checkAuth, eventsCtrl.index)
+router.post('/:id/details',checkAuth, eventsCtrl.createAddAct)
 router.post('/:id/details',checkAuth, eventsCtrl.createAddItem)
 router.get('/:id',eventsCtrl.show)
 router.put('/:id/add-photo', checkAuth, eventsCtrl.addPhoto)
