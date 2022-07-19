@@ -104,13 +104,15 @@ function index(req,res){
 }
 
 function createComment(req, res) {
-  req.body.owner = req.user.profile._id
-  Event.findByIdAndUpdate(req.params.id, req.body.comments, {new: true})
+  req.body.owner = req.user.profile
+  console.log(req.body)
+  Event.findById(req.params.id)
   .then(event=> {
     event.comments.push(req.body)
     event.save()
-    .then(eventComment => {
-      res.json(eventComment)
+    .then(upEvent => {
+      const comment = upEvent.comments[upEvent.comments.length -1]
+      res.json(comment)
     })
   })
   .catch(err => {
@@ -170,6 +172,7 @@ function getAllComments(req, res) {
   .populate('owner')
   .then(event => {
     Comment.findById(req.params.commentId)
+    .populate('owner')
     .then(comment => {
       res.json(eventComment)
     })
