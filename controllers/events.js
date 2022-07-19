@@ -19,6 +19,7 @@ function create(req, res) {
   })
   console.log(req.body)
 }
+
 function update(req, res) {
   Event.findById(req.params.id)
   .then(event => {
@@ -56,6 +57,7 @@ function update(req, res) {
 //     })
 //   })
 // }
+
 function show(req, res){
   Event.findById(req.params.id)
   .populate('owner')
@@ -101,15 +103,14 @@ function index(req,res){
   })
 }
 
-
 function createComment(req, res) {
   req.body.owner = req.user.profile._id
-  Event.findById(req.params.id)
-  .then(event => {
+  Event.findByIdAndUpdate(req.params.id, req.body.comments, {new: true})
+  .then(event=> {
     event.comments.push(req.body)
     event.save()
-    .then(comment => {
-      res.json(comment)
+    .then(eventComment => {
+      res.json(eventComment)
     })
   })
   .catch(err => {
@@ -118,6 +119,51 @@ function createComment(req, res) {
   })
 }
 
+function createItem(req, res) {
+  req.body.owner = req.user.profile._id
+  Event.findById(req.params.id)
+  .then(event => {
+    event.items.push(req.body)
+    event.save()
+    .then(item => {
+      res.json(item)
+    })
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
+function deleteItem(req, res) {
+  Event.findById(req.params.id)
+  .then(event => {
+    if (event.owner._id.equals(req.user.profile)){
+      event.items.remove(req.params.itemId)  //id may not be correct (._id) or (.id)
+      event.save()
+      .then(deletedItem => {
+        res.json(deletedItem)
+      })
+    } else {
+      res.status(401).json({err: "Not authorized"})
+    }
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
+function deleteEvent(req,res) {
+  Event.findByIdAndDelete(req.params.id)
+  .then(deletedEvent => {
+    res.json(deletedEvent)
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
 
 export {
   create,
@@ -126,4 +172,7 @@ export {
   addPhoto,
   createComment,
   update,
+  createItem,
+  deleteItem,
+  deleteEvent as delete
 }
