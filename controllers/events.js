@@ -61,7 +61,11 @@ function update(req, res) {
 
 function show(req, res){
   Event.findById(req.params.id)
-  .populate('owner')
+  .populate([
+    {path:'owner'},
+    {path:'comments',
+      populate:{path: 'author'}}
+  ])
   .then(event => {
     res.json(event)
   })
@@ -105,15 +109,13 @@ function index(req,res){
 }
 
 function createComment(req, res) {
-  req.body.owner = req.user.profile
-  console.log(req.body)
+  req.body.author = req.user.profile
   Event.findById(req.params.id)
   .then(event=> {
     event.comments.push(req.body)
     event.save()
     .then(upEvent => {
-      const comment = upEvent.comments[upEvent.comments.length -1]
-      res.json(comment)
+      res.json(upEvent)
     })
   })
   .catch(err => {
@@ -202,10 +204,13 @@ function deleteEvent(req,res) {
 
 function getAllComments(req, res) {
   Event.findById(red.params.id)
-  .populate('owner')
+  .populate([
+    {path:'owner'},
+    {path:'comments',
+      populate:{path: 'author'}}
+  ])
   .then(event => {
     Comment.findById(req.params.commentId)
-    .populate('owner')
     .then(comment => {
       res.json(eventComment)
     })
@@ -230,9 +235,9 @@ function edit(req,res){
 
 function deleteComment(req, res) {
   Event.findById(req.params.id)
-  .populate('owner', 'guestList')
+  // .populate('author', 'guestList')
   .then(event => {
-    event.comment.remove({_id: req.params.commentId})
+    event.comments.remove({_id: req.params.commentId})
     event.save()
     .then(savedEvent => {
       res.json(savedEvent)
