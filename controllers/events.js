@@ -26,6 +26,7 @@ function update(req, res) {
     if (event.owner._id.equals(req.user.profile)){
       Event.findByIdAndUpdate(req.params.id, req.body, {new: true})
       .populate('owner')
+      .populate('guestList')
       .then(updatedEvent => {
         res.json(updatedEvent)
       })
