@@ -227,6 +227,22 @@ function edit(req,res){
   })
 }
 
+function deleteComment(req, res) {
+  Event.findById(req.params.id)
+  .populate('owner', 'guestList')
+  .then(event => {
+    event.comment.remove({_id: req.params.commentId})
+    event.save()
+    .then(savedEvent => {
+      res.json(savedEvent)
+    })
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
 export {
   create,
   show,
@@ -241,4 +257,5 @@ export {
   deleteEvent as delete,
   getAllComments,
   edit,
+  deleteComment
 }

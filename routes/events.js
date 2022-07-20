@@ -22,6 +22,7 @@ router.post('/:id/add-item', checkAuth, eventsCtrl.createItem)
 router.delete('/:id/deleteItem', checkAuth, eventsCtrl.deleteItem)
 router.delete('/:id', checkAuth, eventsCtrl.delete)
 router.get('/:id/comments', checkAuth, eventsCtrl.getAllComments)
+router.delete('/:id/comments/:commentId', checkAuth, eventsCtrl.deleteComment)
 
 
 export { router }
