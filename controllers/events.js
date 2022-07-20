@@ -26,6 +26,7 @@ function update(req, res) {
     if (event.owner._id.equals(req.user.profile)){
       Event.findByIdAndUpdate(req.params.id, req.body, {new: true})
       .populate('owner')
+      .populate('guestList')
       .then(updatedEvent => {
         res.json(updatedEvent)
       })
@@ -104,13 +105,47 @@ function index(req,res){
 }
 
 function createComment(req, res) {
-  req.body.owner = req.user.profile._id
-  Event.findByIdAndUpdate(req.params.id, req.body.comments, {new: true})
+  req.body.owner = req.user.profile
+  console.log(req.body)
+  Event.findById(req.params.id)
   .then(event=> {
     event.comments.push(req.body)
     event.save()
-    .then(eventComment => {
-      res.json(eventComment)
+    .then(upEvent => {
+      const comment = upEvent.comments[upEvent.comments.length -1]
+      res.json(comment)
+    })
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
+function createAddItem(req, res) {
+  req.body.owner = req.user.profile._id
+  Event.findByIdAndUpdate(req.params.id, req.body.items)
+  .then(event=> {
+    event.items.push(req.body)
+    event.save()
+    .then(eventItem => {
+      res.json(eventItem)
+    })
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
+function createAddAct(req, res) {
+  req.body.owner = req.user.profile._id
+  Event.findByIdAndUpdate(req.params.id, req.body.activities)
+  .then(event=> {
+    event.activities.push(req.body)
+    event.save()
+    .then(eventAct => {
+      res.json(eventAct)
     })
   })
   .catch(err => {
@@ -170,6 +205,7 @@ function getAllComments(req, res) {
   .populate('owner')
   .then(event => {
     Comment.findById(req.params.commentId)
+    .populate('owner')
     .then(comment => {
       res.json(eventComment)
     })
@@ -192,6 +228,22 @@ function edit(req,res){
   })
 }
 
+function deleteComment(req, res) {
+  Event.findById(req.params.id)
+  .populate('owner', 'guestList')
+  .then(event => {
+    event.comment.remove({_id: req.params.commentId})
+    event.save()
+    .then(savedEvent => {
+      res.json(savedEvent)
+    })
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
 export {
   create,
   show,
@@ -199,9 +251,12 @@ export {
   addPhoto,
   createComment,
   update,
+  createAddItem,
+  createAddAct,
   createItem,
   deleteItem,
   deleteEvent as delete,
   getAllComments,
   edit,
+  deleteComment
 }
