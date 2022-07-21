@@ -40,24 +40,21 @@ function update(req, res) {
   })
 }
 
-// function createDetails(req, res) {
-//   Event.findById(req.params.id)
-//     .then(event =>{
-//       event.guestList.push(req.body)
-//       event.activities.push(req.body)
-//       event.items.push(req.body)
-//       event.save()
-//       .then(() => {
-//         console.log(event.comments)
-//         console.log(event.activities)
-//         console.log(event.items)
-//       })
-//     })
-//     .then(populatedEvent => {
-//       res.json(populatedEvent)
-//     })
-//   })
-// }
+function addActOrItem(req, res) {
+  req.body.owner = req.user.profile._id
+  Event.findById(req.params.id)
+  .then(event=> {
+    event[req.params.resource].push(req.body)
+    event.save()
+    .then(updatedEvent => {
+      res.json(updatedEvent)
+    })
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
 
 function show(req, res){
   Event.findById(req.params.id)
@@ -277,5 +274,6 @@ export {
   deleteEvent as delete,
   getAllComments,
   edit,
-  deleteComment
+  deleteComment,
+  addActOrItem,
 }
