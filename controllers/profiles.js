@@ -2,6 +2,7 @@ import { Profile } from '../models/profile.js'
 import { v2 as cloudinary } from 'cloudinary'
 
 function index(req, res) {
+  console.log(req.body,req.params,"*****************");
   Profile.find({})
   .then(profiles => res.json(profiles))
   .catch(err => {

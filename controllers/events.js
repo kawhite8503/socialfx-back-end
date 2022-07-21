@@ -67,9 +67,10 @@ function show(req, res){
   Event.findById(req.params.id)
   .populate([
     {path:'owner'},
+    {path:'guestList'},
     {path:'comments',
       populate:{path: 'author'}}
-  ])
+    ])
   .then(event => {
     res.json(event)
   })
