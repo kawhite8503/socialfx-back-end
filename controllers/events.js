@@ -202,13 +202,22 @@ function edit(req,res){
 
 function deleteComment(req, res) {
   Event.findById(req.params.id)
-  // .populate('author', 'guestList')
+  .populate([
+    {path:'owner'},
+    {path:'comments',
+      populate:{path: 'author'}}
+  ])
   .then(event => {
+    const comment = event.comments.id(req.params.commentId)
+    if (comment.author._id.equals(req.user.profile)) {
     event.comments.remove({_id: req.params.commentId})
     event.save()
     .then(savedEvent => {
       res.json(savedEvent)
     })
+  } else {
+    res.status(401).json({err:"Not Auth!"})
+  }
   })
   .catch(err => {
     console.log(err)
