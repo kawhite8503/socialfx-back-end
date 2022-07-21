@@ -47,7 +47,14 @@ function addActOrItem(req, res) {
     event[req.params.resource].push(req.body)
     event.save()
     .then(updatedEvent => {
-      res.json(updatedEvent)
+      updatedEvent.populate([
+        {path:'owner'},
+        {path:'activities',
+          populate:{path: 'supplier'}}
+      ])
+      .then(populatedEvent => {
+        res.json(populatedEvent)
+      })
     })
   })
   .catch(err => {
@@ -144,21 +151,21 @@ function createAddItem(req, res) {
   })
 }
 
-function createAddAct(req, res) {
-  req.body.owner = req.user.profile._id
-  Event.findByIdAndUpdate(req.params.id, req.body.activities)
-  .then(event=> {
-    event.activities.push(req.body)
-    event.save()
-    .then(eventAct => {
-      res.json(eventAct)
-    })
-  })
-  .catch(err => {
-    console.log(err)
-    res.status(500).json({err: err.errmsg})
-  })
-}
+// function createAddAct(req, res) {
+//   req.body.owner = req.user.profile._id
+//   Event.findByIdAndUpdate(req.params.id, req.body.activities)
+//   .then(event=> {
+//     event.activities.push(req.body)
+//     event.save()
+//     .then(eventAct => {
+//       res.json(eventAct)
+//     })
+//   })
+//   .catch(err => {
+//     console.log(err)
+//     res.status(500).json({err: err.errmsg})
+//   })
+// }
 
 function createItem(req, res) {
   req.body.owner = req.user.profile._id
@@ -169,25 +176,6 @@ function createItem(req, res) {
     .then(item => {
       res.json(item)
     })
-  })
-  .catch(err => {
-    console.log(err)
-    res.status(500).json({err: err.errmsg})
-  })
-}
-
-function deleteItem(req, res) {
-  Event.findById(req.params.id)
-  .then(event => {
-    if (event.owner._id.equals(req.user.profile)){
-      event.items.remove(req.params.itemId)  //id may not be correct (._id) or (.id)
-      event.save()
-      .then(deletedItem => {
-        res.json(deletedItem)
-      })
-    } else {
-      res.status(401).json({err: "Not authorized"})
-    }
   })
   .catch(err => {
     console.log(err)
@@ -262,6 +250,41 @@ function deleteComment(req, res) {
   })
 }
 
+function deleteActivity(req, res) {
+  Event.findById(req.params.id)
+  .populate([
+    {path:'owner'},
+    {path:'activities',
+      populate:{path: 'supplier'}}
+  ])
+  .then(event => {
+      event.activities.remove({_id: req.params.activityId})
+      event.save()
+    .then(savedEvent => {
+      res.json(savedEvent)
+    })  
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
+function deleteItem(req, res) {
+  Event.findById(req.params.id)
+  .then(event => {
+      event.items.remove(req.params.itemId) 
+      event.save()
+      .then(savedEvent => {
+        res.json(savedEvent)
+      })
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
 export {
   create,
   show,
@@ -270,7 +293,7 @@ export {
   createComment,
   update,
   createAddItem,
-  createAddAct,
+  // createAddAct,
   createItem,
   deleteItem,
   deleteEvent as delete,
@@ -278,4 +301,5 @@ export {
   edit,
   deleteComment,
   addActOrItem,
+  deleteActivity,
 }

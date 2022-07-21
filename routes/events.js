@@ -22,11 +22,10 @@ router.post('/:id/:resource',checkAuth, eventsCtrl.addActOrItem)
 router.put('/:id/add-photo', checkAuth, eventsCtrl.addPhoto)
 router.put('/:id', checkAuth, eventsCtrl.update)
 
-router.delete('/:id/deleteItem', checkAuth, eventsCtrl.deleteItem)
 router.delete('/:id', checkAuth, eventsCtrl.delete)
 router.delete('/:id/comments/:commentId', checkAuth, eventsCtrl.deleteComment)
-
-
+router.delete('/:id/activities/:activityId', checkAuth, eventsCtrl.deleteActivity)
+router.delete('/:id/items/:itemId', checkAuth, eventsCtrl.deleteItem) 
 
 
 export { router }
