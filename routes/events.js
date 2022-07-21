@@ -27,4 +27,7 @@ router.delete('/:id', checkAuth, eventsCtrl.delete)
 router.delete('/:id/comments/:commentId', checkAuth, eventsCtrl.deleteComment)
 
 
+
+
 export { router }
+
