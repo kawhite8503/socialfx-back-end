@@ -112,7 +112,14 @@ function createComment(req, res) {
     event.comments.push(req.body)
     event.save()
     .then(upEvent => {
-      res.json(upEvent)
+      upEvent.populate([
+        {path:'owner'},
+        {path:'comments',
+          populate:{path: 'author'}}
+      ])
+      .then(popEvent => {
+        res.json(popEvent)
+      })
     })
   })
   .catch(err => {
