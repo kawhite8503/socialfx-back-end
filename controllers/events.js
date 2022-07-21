@@ -111,6 +111,11 @@ function index(req,res){
 function createComment(req, res) {
   req.body.author = req.user.profile
   Event.findById(req.params.id)
+  .populate([
+    {path:'owner'},
+    {path:'comments',
+      populate:{path: 'author'}}
+  ])
   .then(event=> {
     event.comments.push(req.body)
     event.save()
