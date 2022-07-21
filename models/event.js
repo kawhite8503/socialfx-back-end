@@ -17,7 +17,7 @@ const activitySchema = new mongoose.Schema({
 const itemSchema = new mongoose.Schema({
   itemName: String,
   itemType: { type: String,
-    enum: ["food","supplies"]
+    // enum: ["food","supplies"]
   },
   supplier: {type: mongoose.Schema.Types.ObjectId, ref: 'Profile' }
 }, {
