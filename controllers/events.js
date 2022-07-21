@@ -136,21 +136,21 @@ function createComment(req, res) {
   })
 }
 
-function createAddItem(req, res) {
-  req.body.owner = req.user.profile._id
-  Event.findByIdAndUpdate(req.params.id, req.body.items)
-  .then(event=> {
-    event.items.push(req.body)
-    event.save()
-    .then(eventItem => {
-      res.json(eventItem)
-    })
-  })
-  .catch(err => {
-    console.log(err)
-    res.status(500).json({err: err.errmsg})
-  })
-}
+// function createAddItem(req, res) {
+//   req.body.owner = req.user.profile._id
+//   Event.findByIdAndUpdate(req.params.id, req.body.items)
+//   .then(event=> {
+//     event.items.push(req.body)
+//     event.save()
+//     .then(eventItem => {
+//       res.json(eventItem)
+//     })
+//   })
+//   .catch(err => {
+//     console.log(err)
+//     res.status(500).json({err: err.errmsg})
+//   })
+// }
 
 // function createAddAct(req, res) {
 //   req.body.owner = req.user.profile._id
@@ -293,7 +293,7 @@ export {
   addPhoto,
   createComment,
   update,
-  createAddItem,
+  // createAddItem,
   // createAddAct,
   createItem,
   deleteItem,
